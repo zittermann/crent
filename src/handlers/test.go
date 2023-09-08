@@ -14,6 +14,7 @@ func Ping(c *gin.Context) {
 
 func Home(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.html", gin.H{
-		"title": "wtf is up bitch boy",
+		"sitename": "wtf is up bitch boy",
+		"msg":      "this shit wack",
 	})
 }
