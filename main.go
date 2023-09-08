@@ -9,6 +9,8 @@ import (
 func main() {
 	color.Green("ᕕ( ᐛ )ᕗ gah mf damn dawg! starting the server real quick...")
 	r := gin.Default()
+	r.LoadHTMLGlob("src/templates/*")
 	r.GET("/ping", handlers.Ping)
+	r.GET("/index", handlers.Home)
 	r.Run()
 }
