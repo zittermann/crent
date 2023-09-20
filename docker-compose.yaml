@@ -1,0 +1,32 @@
+version: '3.9'
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: crent
+    network_mode: bridge
+    links:
+      - db
+    ports:
+      - 8080:8080
+    expose:
+      - 8080
+
+  db:
+    image: postgres:latest
+    container_name: postgres_container
+    network_mode: bridge
+    environment:
+      - POSTGRES_PORT=${DB_PORT}
+      - POSTGRES_USER=${DB_USERNAME}  
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:
+  
