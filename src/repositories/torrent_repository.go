@@ -31,7 +31,7 @@ func (t *TorrentRepository) FindByID(id uint,
 
 	if err != nil {
 		return torrentFound, 
-			errors.New("Does not exists a torrent with that ID")
+			errors.New("There is no Torrent with that ID")
 	}
 
 	return torrentFound, nil
