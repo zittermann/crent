@@ -9,14 +9,14 @@ type Page struct {
 }
 
 func (p *Page) GetPage() int {
-	if p.Page == 0 {
+	if p.Page <= 0 {
 		p.Page = 1
 	}
 	return p.Page
 }
 
 func (p *Page) GetLimit() int {
-	if p.Limit == 0 {
+	if p.Limit <= 0 {
 		p.Limit = 50
 	}
 	return p.Limit
