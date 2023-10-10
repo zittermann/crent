@@ -1,18 +1,16 @@
 package repositories
 
 import (
-	"errors"
-
 	response "github.com/obskur123/crent/src/data/responses"
 	"github.com/obskur123/crent/src/models"
 	"gorm.io/gorm"
 )
 
 type ITorrentRepository interface {
-	FindByID(id uint) (t models.Torrent, err error)
-	FindByTitle(title string, p response.Page,
-		) (torrents []models.Torrent, totalElements int64, err error)
-	Save(t models.Torrent)
+	FindByID(id uint) (t *models.Torrent)
+	FindByTitle(title string, p *response.Page,
+	) (torrents *[]models.Torrent, totalElements int64)
+	Save(t *models.Torrent)
 }
 
 type TorrentRepository struct {
@@ -25,43 +23,33 @@ func NewTorrentRepository(db *gorm.DB) ITorrentRepository {
 
 // FindByID implements ITorrentRepository.
 func (t *TorrentRepository) FindByID(id uint,
-	) (torrentFound models.Torrent, err error) {
+	) (torrentFound *models.Torrent) {
 	
-	err = t.db.Find(&torrentFound, id).Error
+	t.db.Find(&torrentFound, id)
 
-	if err != nil {
-		return torrentFound, 
-			errors.New("There is no Torrent with that ID")
-	}
-
-	return torrentFound, nil
+	return torrentFound
 
 }
 
 // FindByTitle implements ITorrentRepository.
-func (t *TorrentRepository) FindByTitle(title string, p response.Page,
-	) (torrents []models.Torrent, totalElements int64, err error) {
+func (t *TorrentRepository) FindByTitle(title string, p *response.Page,
+	) (torrents *[]models.Torrent, totalElements int64) {
 
 	t.db.
 		Where("title LIKE %?%", title).
 		Limit(p.GetLimit()).
 		Offset(p.GetOffset()).
-		Find(&torrents)
+		Find(torrents)
 
 	t.db.Model(&models.Torrent{}).
 		Where("title LIKE %?%", title).
 		Count(&totalElements)
 
-	if len(torrents) == 0 {
-		return nil, 0, 
-			errors.New("There are no matches with that title")
-	}
-
-	return torrents, totalElements, nil 
+	return torrents, totalElements
 
 }
 
 // Save implements ITorrentRepository.
-func (t *TorrentRepository) Save(torrent models.Torrent) {
-	t.db.Create(&torrent)
+func (t *TorrentRepository) Save(torrent *models.Torrent) {
+	t.db.Create(torrent)
 }
