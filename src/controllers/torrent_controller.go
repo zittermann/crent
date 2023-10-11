@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	response "github.com/obskur123/crent/src/data/responses"
 	"github.com/obskur123/crent/src/handlers"
 	"github.com/obskur123/crent/src/models"
 	"github.com/obskur123/crent/src/services"
@@ -54,10 +53,8 @@ func (controller *TorrentController) FindByTitle(c *gin.Context) {
 		handlers.BadRequest(c, err.Error())
 	}
 
-	p := response.Page{ Page: page, Limit: limit }
-
 	title := c.Query("title")
-	err = controller.service.FindByTitle(title, &p)
+	p, err := controller.service.FindByTitle(title, page, limit)
 	
 	if err != nil {
 		handlers.BadRequest(c, err.Error())

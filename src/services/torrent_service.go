@@ -10,7 +10,7 @@ import (
 
 type ITorrentService interface {
 	FindByID(id uint) (*models.Torrent, error)
-	FindByTitle(title string, p *response.Page,) (error)
+	FindByTitle(title string, page int, limit int) (p *response.Page, err error)
 	Save(m *models.Torrent)
 }
 
@@ -37,19 +37,22 @@ func (t *TorrentService) FindByID(id uint) (torrent *models.Torrent, err error) 
 }
 
 // FindByTitle implements ITorrentService.
-func (t *TorrentService) FindByTitle(title string, p *response.Page,
-	) (error) {
+func (t *TorrentService) FindByTitle(title string,
+	 page int, limit int) (p *response.Page, err error) {
 	
+	p.Page = page
+	p.Limit = limit
+
 	torrentsList, totalElements := t.r.FindByTitle(title, p)
 
 	if totalElements == 0 {
-		return errors.New("There are no matches with that title")
+		return nil, errors.New("There are no matches with that title")
 	}
 
 	p.Content = torrentsList
 	p.TotalElements = totalElements
 
-	return nil
+	return p, nil
 
 }
 
