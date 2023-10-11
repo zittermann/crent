@@ -14,11 +14,10 @@ type TorrentController struct {
 	service services.ITorrentService
 }
 
-func NewTorrentController(
-	service services.ITorrentService) *TorrentController {
-		return &TorrentController {
-			service: service,
-		}
+func NewTorrentController(service services.ITorrentService) *TorrentController {
+	return &TorrentController {
+		service: service,
+	}
 }
 
 func (contoller *TorrentController) FindByID(c *gin.Context) {
