@@ -1,20 +1,18 @@
 package repositories
 
 import (
-	"errors"
-
 	response "github.com/obskur123/crent/src/data/responses"
 	"github.com/obskur123/crent/src/models"
 	"gorm.io/gorm"
 )
 
 type IUserRepository interface {
-	FindByID(id uint) (u models.User, err error)
-	FindByName(name string, p response.Page,
-	) (matches []models.User, totalElements int64, err error)
-	FindByNickname(nickname string, p response.Page,
-	) (matches []models.User, totalElements int64, err error)
-	Save(user models.User)
+	FindByID(id uint) (u *models.User)
+	FindByName(name string, p *response.Page,
+	) (matches *[]models.User, totalElements int64)
+	FindByNickname(nickname string, p *response.Page,
+		) (matches *[]models.User, totalElements int64)
+	Save(user *models.User)
 }
 
 type UserRepository struct {
@@ -26,65 +24,50 @@ func NewUserRepository(db *gorm.DB) IUserRepository {
 }
 
 // FindByID implements IUserRepository.
-func (t *UserRepository) FindByID(id uint,
-) (userFound models.User, err error) {
+func (t *UserRepository) FindByID(id uint) (userFound *models.User) {
 
-	err = t.db.Find(&userFound).Error
+	t.db.Find(userFound)
 
-	if err != nil {
-		return userFound,
-			errors.New("There is no User with that ID")
-	}
-
-	return userFound, nil
+	return userFound
 
 }
 
 // FindByName implements IUserRepository.
-func (t *UserRepository) FindByName(name string, p response.Page,
-) (matches []models.User, totalElements int64, err error) {
+func (t *UserRepository) FindByName(name string, p *response.Page,
+) (matches *[]models.User, totalElements int64) {
 
 	t.db.Where("name LIKE %?%", name).
 		Limit(p.GetLimit()).
 		Offset(p.GetOffset()).
-		Find(&matches)
+		Find(matches)
 
 	t.db.Model(&models.User{}).
 		Where("name LIKE %?%", name).
 		Count(&totalElements)
 
-	if len(matches) == 0 {
-		return nil, 0,
-			errors.New("There are no matches with that name")
-	}
 
-	return matches, totalElements, nil
+	return matches, totalElements
 
 }
 
 // FindByNickname implements IUserRepository.
-func (t *UserRepository) FindByNickname(nickname string, p response.Page,
-) (matches []models.User, totalElements int64, err error) {
+func (t *UserRepository) FindByNickname(nickname string, p *response.Page,
+) (matches *[]models.User, totalElements int64) {
 
 	t.db.Where("nickname LIKE %?%", nickname).
 		Limit(p.GetLimit()).
 		Offset(p.GetOffset()).
-		Find(&matches)
+		Find(matches)
 
 	t.db.Model(&models.User{}).
 		Where("nickname LIKE %?%", nickname).
 		Count(&totalElements)
 
-	if len(matches) == 0 {
-		return nil, 0,
-			errors.New("There are no matches with that nickname")
-	}
-
-	return matches, totalElements, nil
+	return matches, totalElements
 
 }
 
 // Save implements IUserRepository.
-func (t *UserRepository) Save(user models.User) {
-	t.db.Create(&user)
+func (t *UserRepository) Save(user *models.User) {
+	t.db.Create(user)
 }
