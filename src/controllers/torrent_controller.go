@@ -20,7 +20,7 @@ func NewTorrentController(service services.ITorrentService) *TorrentController {
 	}
 }
 
-func (contoller *TorrentController) FindByID(c *gin.Context) {
+func (controller *TorrentController) FindByID(c *gin.Context) {
 
 	id, err := strconv.Atoi(c.Param("id"))
 
@@ -28,7 +28,7 @@ func (contoller *TorrentController) FindByID(c *gin.Context) {
 		handlers.BadRequest(c, err.Error())
 	}
 
-	torrent, err := contoller.service.FindByID(uint(id))
+	torrent, err := controller.service.FindByID(uint(id))
 
 	if err != nil { 
 		handlers.NotFound(c, err.Error()) 
