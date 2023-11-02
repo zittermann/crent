@@ -9,8 +9,8 @@ import (
 func TorrentRoutes(r *gin.Engine, service services.ITorrentService) {
 	c := controllers.NewTorrentController(service)
 
-	r.GET("/v1/torrents/:id", c.FindByID)
-	r.GET("/v1/torrents/title", c.FindByTitle)
-	r.POST("/v1/torrents", c.Save)
+	r.GET("api/v1/torrents/:id", c.FindByID)
+	r.GET("api/v1/torrents/title", c.FindByTitle)
+	r.POST("api/v1/torrents", c.Save)
 
 }
