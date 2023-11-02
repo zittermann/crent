@@ -7,11 +7,11 @@ import (
 )
 
 type IUserRepository interface {
-	FindByID(id uint) (u *models.User)
-	FindByName(name string, p *response.Page,
-	) (matches *[]models.User, totalElements int64)
-	FindByNickname(nickname string, p *response.Page,
-		) (matches *[]models.User, totalElements int64)
+	FindByID(id uint) (*models.User)
+	FindByName(name string, p response.Page,
+	) (*[]models.User, int64)
+	FindByNickname(nickname string, p response.Page,
+		) (*[]models.User, int64)
 	Save(user *models.User)
 }
 
@@ -24,46 +24,54 @@ func NewUserRepository(db *gorm.DB) IUserRepository {
 }
 
 // FindByID implements IUserRepository.
-func (t *UserRepository) FindByID(id uint) (userFound *models.User) {
+func (t *UserRepository) FindByID(id uint) (*models.User) {
 
-	t.db.Find(userFound)
+	var userFound models.User
 
-	return userFound
+	t.db.Find(&userFound, id)
+
+	return &userFound
 
 }
 
 // FindByName implements IUserRepository.
-func (t *UserRepository) FindByName(name string, p *response.Page,
-) (matches *[]models.User, totalElements int64) {
+func (t *UserRepository) FindByName(name string, p response.Page,
+) (*[]models.User, int64) {
 
-	t.db.Where("name LIKE %?%", name).
+	var matches []models.User
+	var totalElements int64
+
+	t.db.Where("name LIKE ?", name).
 		Limit(p.GetLimit()).
 		Offset(p.GetOffset()).
-		Find(matches)
+		Find(&matches)
 
 	t.db.Model(&models.User{}).
-		Where("name LIKE %?%", name).
+		Where("name LIKE ?", name).
 		Count(&totalElements)
 
 
-	return matches, totalElements
+	return &matches, totalElements
 
 }
 
 // FindByNickname implements IUserRepository.
-func (t *UserRepository) FindByNickname(nickname string, p *response.Page,
-) (matches *[]models.User, totalElements int64) {
+func (t *UserRepository) FindByNickname(nickname string, p response.Page,
+) (*[]models.User, int64) {
 
-	t.db.Where("nickname LIKE %?%", nickname).
+	var matches []models.User
+	var totalElements int64
+
+	t.db.Where("nickname LIKE ?", nickname).
 		Limit(p.GetLimit()).
 		Offset(p.GetOffset()).
-		Find(matches)
+		Find(&matches)
 
 	t.db.Model(&models.User{}).
-		Where("nickname LIKE %?%", nickname).
+		Where("nickname LIKE ?", nickname).
 		Count(&totalElements)
 
-	return matches, totalElements
+	return &matches, totalElements
 
 }
 

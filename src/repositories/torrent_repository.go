@@ -7,9 +7,9 @@ import (
 )
 
 type ITorrentRepository interface {
-	FindByID(id uint) (t *models.Torrent)
-	FindByTitle(title string, p *response.Page,
-	) (torrents *[]models.Torrent, totalElements int64)
+	FindByID(id uint) (*models.Torrent)
+	FindByTitle(title string, p response.Page,
+	) (*[]models.Torrent, int64)
 	Save(t *models.Torrent)
 }
 
@@ -23,29 +23,34 @@ func NewTorrentRepository(db *gorm.DB) ITorrentRepository {
 
 // FindByID implements ITorrentRepository.
 func (t *TorrentRepository) FindByID(id uint,
-	) (torrentFound *models.Torrent) {
+	) (*models.Torrent) {
 	
+	var torrentFound models.Torrent 
+
 	t.db.Find(&torrentFound, id)
 
-	return torrentFound
+	return &torrentFound
 
 }
 
 // FindByTitle implements ITorrentRepository.
-func (t *TorrentRepository) FindByTitle(title string, p *response.Page,
-	) (torrents *[]models.Torrent, totalElements int64) {
+func (t *TorrentRepository) FindByTitle(title string, p response.Page,
+	) (*[]models.Torrent, int64) {
+
+	var torrents []models.Torrent
+	var totalElements int64
 
 	t.db.
-		Where("title LIKE %?%", title).
+		Where("title LIKE ?", title).
 		Limit(p.GetLimit()).
 		Offset(p.GetOffset()).
-		Find(torrents)
+		Find(&torrents)
 
 	t.db.Model(&models.Torrent{}).
-		Where("title LIKE %?%", title).
+		Where("title LIKE ?", title).
 		Count(&totalElements)
 
-	return torrents, totalElements
+	return &torrents, totalElements
 
 }
 
