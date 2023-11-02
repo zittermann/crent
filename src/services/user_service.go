@@ -10,9 +10,9 @@ import (
 
 type IUserService interface {
 	FindByID(id uint) (*models.User, error)
-	FindByName(name string, page int, limit int) (*response.Page, error)
+	FindByName(name string, page int, limit int) (response.Page, error)
 	FindByNickname(nickname string, page int, limit int,
-		) (p *response.Page, err error)
+		) (p response.Page, err error)
 	Save(user *models.User)
 }
 
@@ -41,7 +41,7 @@ func (t *UserService) FindByID(id uint) (user *models.User, err error) {
 
 // FindByName implements IUserService.
 func (t *UserService) FindByName(name string, page int, limit int,
-	) (p *response.Page, err error) {
+	) (p response.Page, err error) {
 
 	p.Page = page
 	p.Limit = limit
@@ -49,11 +49,11 @@ func (t *UserService) FindByName(name string, page int, limit int,
 	matches, totalElements := t.repository.FindByName(name, p)
 
 	if totalElements == 0 {
-		return nil, 
+		return p, 
 			errors.New("There are no matches with that name")
 	}
 
-	p.Content = matches
+	p.Content = *matches
 	p.TotalElements = totalElements
 
 	return p, nil
@@ -62,7 +62,7 @@ func (t *UserService) FindByName(name string, page int, limit int,
 
 // FindByNickname implements IUserService.
 func (t *UserService) FindByNickname(nickname string, page int, limit int,
-	) (p *response.Page, err error) {
+	) (p response.Page, err error) {
 	
 		p.Page = page
 		p.Limit = limit
@@ -70,10 +70,10 @@ func (t *UserService) FindByNickname(nickname string, page int, limit int,
 		matches, totalElements := t.repository.FindByNickname(nickname, p)	
 
 		if totalElements == 0 {
-			return nil, errors.New("There are no matches with that nickname")
+			return p, errors.New("There are no matches with that nickname")
 		}
 		
-		p.Content = matches
+		p.Content = *matches
 		p.TotalElements = totalElements
 
 		return p, nil

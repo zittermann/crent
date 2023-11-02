@@ -57,9 +57,9 @@ func (controller *UserController) FindByName(c *gin.Context) {
 	
 	if err != nil {
 		handlers.BadRequest(c, err.Error())
+	} else {
+		c.JSON(http.StatusOK, p)
 	}
-
-	c.JSON(http.StatusOK, p)
 
 }
 
@@ -82,9 +82,11 @@ func (controller *UserController) FindByNickname(c *gin.Context) {
 	
 	if err != nil {
 		handlers.BadRequest(c, err.Error())
+	} else {
+		c.JSON(http.StatusOK, p)
 	}
 
-	c.JSON(http.StatusOK, p)
+	
 
 }
 
@@ -94,10 +96,9 @@ func (controller *UserController) Save(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&user); err != nil {
 		handlers.BadRequest(c, err.Error())
+	} else {
+		controller.service.Save(&user)
+		c.JSON(http.StatusOK, user)
 	}
-	
-	controller.service.Save(&user)
-
-	c.JSON(http.StatusOK, user)
 
 }

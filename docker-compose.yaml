@@ -18,10 +18,10 @@ services:
     container_name: postgres_container
     network_mode: bridge
     environment:
-      - POSTGRES_PORT=${DB_PORT}
-      - POSTGRES_USER=${DB_USERNAME}  
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=admin  
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=test
+      - POSTGRES_PORT=5432
     ports:
       - "5432:5432"
     volumes:
