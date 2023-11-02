@@ -26,15 +26,17 @@ func (controller *TorrentController) FindByID(c *gin.Context) {
 
 	if err != nil {
 		handlers.BadRequest(c, err.Error())
+		return
 	}
 
 	torrent, err := controller.service.FindByID(uint(id))
 
 	if err != nil { 
 		handlers.NotFound(c, err.Error()) 
-	} else {
-		c.JSON(http.StatusOK, torrent)
-	}
+		return
+	} 
+
+	c.JSON(http.StatusOK, torrent)
 
 }
 
@@ -44,12 +46,14 @@ func (controller *TorrentController) FindByTitle(c *gin.Context) {
 
 	if err != nil {
 		handlers.BadRequest(c, err.Error())
+		return
 	}
 
 	limit, err := strconv.Atoi(c.DefaultQuery("limit", "50"))
 
 	if err != nil {
 		handlers.BadRequest(c, err.Error())
+		return
 	}
 
 	title := c.Query("title")
@@ -57,10 +61,10 @@ func (controller *TorrentController) FindByTitle(c *gin.Context) {
 	
 	if err != nil {
 		handlers.BadRequest(c, err.Error())
-	} else {
-		c.JSON(http.StatusOK, p)
-	}
-
+		return
+	} 
+	
+	c.JSON(http.StatusOK, p)
 
 }
 
@@ -70,9 +74,10 @@ func (controller *TorrentController) Save(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&torrent); err != nil {
 		handlers.BadRequest(c, err.Error())
-	} else {
-		controller.service.Save(&torrent)
-		c.JSON(http.StatusCreated, torrent)
+		return
 	}
+
+	controller.service.Save(&torrent)
+	c.JSON(http.StatusCreated, torrent)
 
 }

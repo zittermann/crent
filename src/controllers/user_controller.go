@@ -26,12 +26,14 @@ func (controller *UserController) FindByID(c *gin.Context) {
 
 	if err != nil {
 		handlers.BadRequest(c, err.Error())
+		return
 	}
 
 	user, err := controller.service.FindByID(uint(id))
 
 	if err != nil {
 		handlers.NotFound(c, err.Error())
+		return
 	}
 
 	c.JSON(http.StatusOK, user)
@@ -44,12 +46,14 @@ func (controller *UserController) FindByName(c *gin.Context) {
 
 	if err != nil {
 		handlers.BadRequest(c, err.Error())
+		return
 	}
 
 	limit, err := strconv.Atoi(c.DefaultQuery("limit", "50"))
 
 	if err != nil {
 		handlers.BadRequest(c, err.Error())
+		return
 	}
 
 	name := c.Query("name")
@@ -57,9 +61,10 @@ func (controller *UserController) FindByName(c *gin.Context) {
 	
 	if err != nil {
 		handlers.BadRequest(c, err.Error())
-	} else {
-		c.JSON(http.StatusOK, p)
-	}
+		return
+	} 
+	
+	c.JSON(http.StatusOK, p)
 
 }
 
@@ -69,12 +74,14 @@ func (controller *UserController) FindByNickname(c *gin.Context) {
 
 	if err != nil {
 		handlers.BadRequest(c, err.Error())
+		return
 	}
 
 	limit, err := strconv.Atoi(c.DefaultQuery("limit", "50"))
 
 	if err != nil {
 		handlers.BadRequest(c, err.Error())
+		return
 	}
 
 	nickname := c.Query("nick")
@@ -82,11 +89,9 @@ func (controller *UserController) FindByNickname(c *gin.Context) {
 	
 	if err != nil {
 		handlers.BadRequest(c, err.Error())
-	} else {
-		c.JSON(http.StatusOK, p)
+		return
 	}
-
-	
+	c.JSON(http.StatusOK, p)
 
 }
 
@@ -96,9 +101,10 @@ func (controller *UserController) Save(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&user); err != nil {
 		handlers.BadRequest(c, err.Error())
-	} else {
-		controller.service.Save(&user)
-		c.JSON(http.StatusOK, user)
-	}
+		return
+	} 
 
+	controller.service.Save(&user)
+	c.JSON(http.StatusOK, user)
+	
 }
