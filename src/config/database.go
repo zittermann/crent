@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"os"
 	"sync"
 
 	"github.com/obskur123/crent/src/helper"
@@ -19,10 +18,11 @@ func CreateConnection() *gorm.DB {
 
 	dsn := fmt.Sprintf(
 		"host=db user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=America/Buenos_Aires",
-		os.Getenv("DB_USERNAME"),
-		os.Getenv("DB_PASSWORD"),
-		os.Getenv("DB_NAME"),
-		os.Getenv("DB_PORT"),
+		// os.Getenv("DB_USERNAME"),
+		// os.Getenv("DB_PASSWORD"),
+		// os.Getenv("DB_NAME"),
+		// os.Getenv("DB_PORT"),
+		"admin", "admin", "test", "5432",
 	)
 
 	// Singleton pattern applied
