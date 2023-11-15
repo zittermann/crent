@@ -1,5 +1,5 @@
 package utils
 
-func NotEmpty(s string) bool {
-	return s != ""
+func IsEmpty(s string) bool {
+	return s == ""
 }

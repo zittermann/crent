@@ -84,7 +84,13 @@ func (controller *TorrentController) Save(c *gin.Context) {
 		return
 	}
 
-	controller.service.Save(&torrent)
+	err := controller.service.Save(&torrent)
+
+	if err != nil {
+		sentry.CaptureException(err)
+		handlers.BadRequest(c, err.Error())
+	}
+
 	c.JSON(http.StatusCreated, torrent)
 
 }

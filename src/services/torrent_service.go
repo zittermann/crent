@@ -6,12 +6,13 @@ import (
 	response "github.com/obskur123/crent/src/data/responses"
 	"github.com/obskur123/crent/src/models"
 	"github.com/obskur123/crent/src/repositories"
+	"github.com/obskur123/crent/src/utils"
 )
 
 type ITorrentService interface {
 	FindByID(id uint) (*models.Torrent, error)
 	FindByTitle(title string, page int, limit int) (response.Page, error)
-	Save(m *models.Torrent)
+	Save(m *models.Torrent) error
 }
 
 type TorrentService struct {
@@ -57,6 +58,16 @@ func (t *TorrentService) FindByTitle(title string,
 }
 
 // Save implements ITorrentService.
-func (t *TorrentService) Save(m *models.Torrent) {
+func (t *TorrentService) Save(m *models.Torrent) error {
+
+	if utils.IsEmpty(m.Title) {
+		return errors.New("Title cannot empty string")
+	}
+
+	if utils.IsEmpty(m.URI) {
+		return errors.New("URI cannot empty string")
+	}
+
 	t.r.Save(m)
+	return nil
 }
