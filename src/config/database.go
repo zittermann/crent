@@ -20,7 +20,7 @@ func CreateConnection() *gorm.DB {
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=America/Buenos_Aires",
 		os.Getenv("POSTGRES_HOST"), os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"), 
-		os.Getenv("POSTGRES_DB"), os.Getenv("POSTGRES_PORT"),
+		os.Getenv("POSTGRES_DB"), "5432",
 	)
 
 	// Singleton pattern applied
