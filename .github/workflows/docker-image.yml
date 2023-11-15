@@ -3,12 +3,10 @@ name: Build and Push to DockerHub
 on:
   pull_request:
     branches: [ "main" ]
-  push:
-    branches: [ "main" ]
 
 jobs:
   build:
-    name: Push Docker image to DockerHub
+    name: Push Docker image to DockerHub and Deploy on an EC2 instance
     runs-on: ubuntu-latest
     
     steps:
@@ -27,3 +25,16 @@ jobs:
         push: true
         tags: zittermann/crent:latest
       
+    - name: Deployment
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST_DNS }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          docker stop crent || true
+          docker rm crent || true
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/crent:latest
+          docker run -d --name crent ${{ secrets.DOCKERHUB_USERNAME }}/crent:latest
+          
+        
