@@ -40,8 +40,15 @@ func main() {
 	routes.UserRoutes(r, userService)
 	routes.TorrentRoutes(r, torrentService)
 
+	// Healthcheck 
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H {
+			"message": "pong",
+		})
+	})
+
 	// r.LoadHTMLGlob("src/templates/*")
-	r.GET("/ping", handlers.Ping)
+	// r.GET("/ping", handlers.Ping)
 	r.GET("/index", handlers.Home)
 	r.Run()
 }
