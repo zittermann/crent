@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"os"
 	"sync"
 
 	"github.com/obskur123/crent/src/helper"
@@ -22,7 +23,8 @@ func CreateConnection() *gorm.DB {
 		// os.Getenv("DB_PASSWORD"),
 		// os.Getenv("DB_NAME"),
 		// os.Getenv("DB_PORT"),
-		"admin", "admin", "test", "5432",
+		os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"), 
+		os.Getenv("POSTGRES_DB"), os.Getenv("POSTGRES_PORT"),
 	)
 
 	// Singleton pattern applied
