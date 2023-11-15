@@ -114,7 +114,13 @@ func (controller *UserController) Save(c *gin.Context) {
 		return
 	} 
 
-	controller.service.Save(&user)
+	err := controller.service.Save(&user)
+
+	if err != nil {
+		sentry.CaptureException(err)
+		handlers.BadRequest(c, err.Error())
+	}
+
 	c.JSON(http.StatusOK, user)
 	
 }
