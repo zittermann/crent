@@ -2,11 +2,10 @@ name: Build and Push to DockerHub
 
 on:
   pull_request:
-    branches: 
-      - "main"
+    branches: ['main']
 
 jobs:
-  push_to_registry:
+  build:
     name: Push Docker image to DockerHub
     runs-on: ubuntu-latest
     
@@ -25,6 +24,6 @@ jobs:
       run: |
         docker buildx create --use
         echo $DOCKER_TOKEN | docker login -u $DOCKER_USERNAME --password-stdin
-        docker buildx build -t zittermann/crent:latest .
+        docker buildx build --platform linux/amd64,linux/arm64 -t zittermann/crent:latest .
         docker push zittermann/crent:latest
       
