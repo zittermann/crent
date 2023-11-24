@@ -21,15 +21,8 @@ jobs:
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
-      
-    - name: Configure Docker layer caching for pull requests
-      run: |
-        if [ -n "$CI_PULL_REQUEST" ]; then
-          docker buildx create --use
-          docker buildx inspect --bootstrap
-        fi
 
-    - name: Build and Push
+    - name: Build and Push to DockerHub
       uses: docker/build-push-action@v5
       with:
         push: true
@@ -42,16 +35,20 @@ jobs:
           POSTGRES_DB=${{ secrets.POSTGRES_DB }}
           POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}
       
-    - name: Deployment
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST_DNS }}
-        username: ${{ secrets.EC2_USERNAME }}
-        key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          docker stop crent || true
-          docker rm crent || true
-          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/crent:latest
-          docker run -d --name crent ${{ secrets.DOCKERHUB_USERNAME }}/crent:latest
-          
+  deploy:
+    name: Deploy on an EC2 Instance
+    runs-on: ubuntu-latest
+    steps:
+      - name: AWS Credentials and Docker pull from DockerHub
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_DNS }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker stop crent || true
+            docker rm crent || true
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/crent:latest
+            docker run -d --name crent ${{ secrets.DOCKERHUB_USERNAME }}/crent:latest
+        
         
