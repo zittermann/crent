@@ -18,9 +18,9 @@ func CreateConnection() *gorm.DB {
 	var err error
 
 	dsn := fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=America/Buenos_Aires",
-		os.Getenv("POSTGRES_HOST"), os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"),
-		os.Getenv("POSTGRES_DB"), os.Getenv("POSTGRES_PORT"),
+		"host=%s user=%s password=%s dbname=%s port=5432 sslmode=disable TimeZone=America/Buenos_Aires",
+		os.Getenv("POSTGRES_HOST"), os.Getenv("POSTGRES_USER"), 
+		os.Getenv("POSTGRES_PASSWORD"), os.Getenv("POSTGRES_DB"),
 	)
 
 	// Singleton pattern applied
